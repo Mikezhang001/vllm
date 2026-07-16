@@ -1306,6 +1306,24 @@ if(VLLM_GPU_LANG STREQUAL "CUDA")
     message(STATUS "Not building DSV3 router GEMM kernels as no compatible archs found"
                    " (requires SM90+ and CUDA >= 12.0)")
   endif()
+
+  # vllm_mega_moe: fused W4A8 (INT4 weight + FP8 activation) up/down MoE
+  # megakernel. Requires SM90a (Hopper WGMMA) and CUDA >= 12.0.
+  cuda_archs_loose_intersection(VLLM_MEGA_MOE_ARCHS "9.0a" "${CUDA_ARCHS}")
+  if(${CMAKE_CUDA_COMPILER_VERSION} VERSION_GREATER_EQUAL 12.0 AND VLLM_MEGA_MOE_ARCHS)
+    set(VLLM_MEGA_MOE_SRC
+      "csrc/libtorch_stable/moe/vllm_mega_moe/vllm_mega_moe_w4a8_kernel.cu"
+      "csrc/libtorch_stable/moe/vllm_mega_moe/vllm_mega_moe_w4a8_entry.cu")
+    set_gencode_flags_for_srcs(
+      SRCS "${VLLM_MEGA_MOE_SRC}"
+      CUDA_ARCHS "${VLLM_MEGA_MOE_ARCHS}")
+    list(APPEND VLLM_MOE_EXT_SRC "${VLLM_MEGA_MOE_SRC}")
+
+    message(STATUS "Building vllm_mega_moe W4A8 kernels for archs: ${VLLM_MEGA_MOE_ARCHS}")
+  else()
+    message(STATUS "Not building vllm_mega_moe W4A8 kernels as no compatible archs found"
+                   " (requires SM90a and CUDA >= 12.0)")
+  endif()
 endif()
 
 message(STATUS "Enabling MoE C_stable extension.")

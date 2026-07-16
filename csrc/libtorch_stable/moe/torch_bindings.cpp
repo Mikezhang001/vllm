@@ -130,6 +130,20 @@ STABLE_TORCH_LIBRARY_FRAGMENT(_moe_C, m) {
   // DeepSeek V3 optimized router GEMM for SM90+
   m.def("dsv3_router_gemm(Tensor! output, Tensor mat_a, Tensor mat_b) -> ()");
   // conditionally compiled so impl registration is in source file
+
+  // vllm_mega_moe: fused W4A8 (INT4 weight + FP8 activation) up/down
+  // MoE megakernel for SM90 (Hopper WGMMA). Conditionally compiled, so
+  // the impl registration lives with the source file.
+  m.def(
+      "vllm_mega_moe_fused_w4a8_up_down("
+      "Tensor x, Tensor x_scale, "
+      "Tensor w, Tensor w_scale, "
+      "Tensor w2, Tensor w2_scale, "
+      "Tensor sorted_token_ids, Tensor expert_ids, "
+      "Tensor num_tokens_post_padded, Tensor topk_weights, "
+      "Tensor(a!) out, "
+      "int top_k, int block_m, int block_n, int warp_n, int stages, "
+      "float scaling_factor) -> ()");
 #endif
 }
 

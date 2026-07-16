@@ -202,6 +202,7 @@ if TYPE_CHECKING:
     VLLM_FLASHINFER_AUTOTUNE_SKIP_OPS: list[str] | None = None
     VLLM_FLASHINFER_ALLREDUCE_BACKEND: Literal["auto", "trtllm", "mnnvl"] = "auto"
     VLLM_FLASHINFER_WORKSPACE_BUFFER_SIZE: int = 394 * 1024 * 1024
+    VLLM_W4A8_MOE_BACKEND: Literal["cutlass", "vllm_mega_moe"] = "cutlass"
     VLLM_XGRAMMAR_CACHE_MB: int = 0
     VLLM_REGEX_COMPILATION_TIMEOUT_S: int = 5
     VLLM_MSGPACK_ZERO_COPY_THRESHOLD: int = 256
@@ -1655,6 +1656,21 @@ environment_variables: dict[str, Callable[[], Any]] = {
         "VLLM_FLASHINFER_ALLREDUCE_BACKEND",
         "auto",
         ["auto", "trtllm", "mnnvl"],
+    ),
+    # W4A8 (int4 weight + fp8 activation) MoE backend selector.
+    # "cutlass"       - default, use the in-tree CutlassExpertsW4A8Fp8 kernel
+    #                   (requires intermediate_size_per_partition % 256 == 0).
+    # "vllm_mega_moe" - use vLLM's in-tree one-kernel-fused WGMMA
+    #                   megakernel: UP GEMM, SwiGLU and DOWN GEMM run
+    #                   inside a single kernel launch (naming parallels
+    #                   "deep_gemm_mega_moe" in the MoEBackend selector).
+    #                   Handles shapes where
+    #                   intermediate_size_per_partition == 128 (e.g.
+    #                   Qwen3.5-MoE at TP=8). Requires SM90 (Hopper).
+    "VLLM_W4A8_MOE_BACKEND": env_with_choices(
+        "VLLM_W4A8_MOE_BACKEND",
+        "cutlass",
+        ["cutlass", "vllm_mega_moe"],
     ),
     # Control the workspace buffer size for the FlashInfer backend.
     "VLLM_FLASHINFER_WORKSPACE_BUFFER_SIZE": lambda: int(

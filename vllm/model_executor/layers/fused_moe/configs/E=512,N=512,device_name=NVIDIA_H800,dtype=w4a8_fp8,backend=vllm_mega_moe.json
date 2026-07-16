@@ -1,0 +1,394 @@
+{
+    "1": {
+        "avg_us": 62.36000023782253,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 5,
+        "warp_n": 8
+    },
+    "2": {
+        "avg_us": 60.48799995332956,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 5,
+        "warp_n": 8
+    },
+    "3": {
+        "avg_us": 60.705599933862686,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 5,
+        "warp_n": 8
+    },
+    "4": {
+        "avg_us": 60.627200454473495,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "5": {
+        "avg_us": 61.14080008119345,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "6": {
+        "avg_us": 61.67040020227432,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "7": {
+        "avg_us": 61.806400306522846,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 5,
+        "warp_n": 8
+    },
+    "8": {
+        "avg_us": 56.41600005328655,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "10": {
+        "avg_us": 57.82239995896816,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "12": {
+        "avg_us": 58.54080002754927,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "14": {
+        "avg_us": 59.35999974608421,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 5,
+        "warp_n": 8
+    },
+    "16": {
+        "avg_us": 81.86559956520796,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 5,
+        "warp_n": 8
+    },
+    "20": {
+        "avg_us": 104.49600033462048,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "24": {
+        "avg_us": 105.13439886271954,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "28": {
+        "avg_us": 116.43840037286282,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "32": {
+        "avg_us": 128.24960015714169,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "40": {
+        "avg_us": 150.73920041322708,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "48": {
+        "avg_us": 166.95199832320213,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "56": {
+        "avg_us": 175.43680220842361,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "64": {
+        "avg_us": 196.60000056028366,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "80": {
+        "avg_us": 220.2495999634266,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "96": {
+        "avg_us": 259.9888011813164,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "112": {
+        "avg_us": 265.4992014169693,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "128": {
+        "avg_us": 286.0607981681824,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "160": {
+        "avg_us": 332.67679661512375,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "192": {
+        "avg_us": 376.1872008442879,
+        "block_m": 8,
+        "block_n": 32,
+        "stages": 5,
+        "warp_n": 8
+    },
+    "224": {
+        "avg_us": 384.7456023097038,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "256": {
+        "avg_us": 402.97920405864716,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "320": {
+        "avg_us": 451.1567994952202,
+        "block_m": 24,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "384": {
+        "avg_us": 461.5823969244957,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "448": {
+        "avg_us": 489.94559943675995,
+        "block_m": 16,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "512": {
+        "avg_us": 506.04959428310394,
+        "block_m": 24,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "640": {
+        "avg_us": 537.2415989637375,
+        "block_m": 24,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "768": {
+        "avg_us": 562.988805770874,
+        "block_m": 24,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "896": {
+        "avg_us": 575.8671998977661,
+        "block_m": 24,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "1024": {
+        "avg_us": 582.900795340538,
+        "block_m": 24,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "1280": {
+        "avg_us": 621.7519998550415,
+        "block_m": 32,
+        "block_n": 32,
+        "stages": 5,
+        "warp_n": 8
+    },
+    "1536": {
+        "avg_us": 674.3840008974075,
+        "block_m": 24,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "1792": {
+        "avg_us": 686.3392055034637,
+        "block_m": 40,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "2048": {
+        "avg_us": 725.6112039089203,
+        "block_m": 48,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "2560": {
+        "avg_us": 793.3775991201401,
+        "block_m": 48,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "3072": {
+        "avg_us": 847.5039958953857,
+        "block_m": 40,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "3584": {
+        "avg_us": 894.2064017057419,
+        "block_m": 48,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "4096": {
+        "avg_us": 945.1216012239456,
+        "block_m": 56,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "5120": {
+        "avg_us": 1068.0752009153366,
+        "block_m": 64,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "6144": {
+        "avg_us": 1219.4944143295288,
+        "block_m": 72,
+        "block_n": 32,
+        "stages": 3,
+        "warp_n": 8
+    },
+    "7168": {
+        "avg_us": 1323.0528116226196,
+        "block_m": 72,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "8192": {
+        "avg_us": 1517.6575899124146,
+        "block_m": 80,
+        "block_n": 32,
+        "stages": 3,
+        "warp_n": 8
+    },
+    "9216": {
+        "avg_us": 1738.268792629242,
+        "block_m": 64,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "10240": {
+        "avg_us": 1907.088017463684,
+        "block_m": 72,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "11264": {
+        "avg_us": 2050.556802749634,
+        "block_m": 64,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "12288": {
+        "avg_us": 2189.675199985504,
+        "block_m": 64,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "13312": {
+        "avg_us": 2326.0527849197388,
+        "block_m": 72,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "14336": {
+        "avg_us": 2478.976011276245,
+        "block_m": 72,
+        "block_n": 32,
+        "stages": 3,
+        "warp_n": 8
+    },
+    "15360": {
+        "avg_us": 2640.875196456909,
+        "block_m": 72,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    },
+    "16384": {
+        "avg_us": 2769.876778125763,
+        "block_m": 64,
+        "block_n": 32,
+        "stages": 4,
+        "warp_n": 8
+    }
+}

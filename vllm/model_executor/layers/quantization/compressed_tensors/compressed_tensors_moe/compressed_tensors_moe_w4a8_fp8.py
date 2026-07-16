@@ -17,7 +17,9 @@ from vllm.model_executor.layers.fused_moe.config import (
     FusedMoEQuantConfig,
 )
 from vllm.model_executor.layers.fused_moe.oracle.w4a8 import (
+    W4A8MoeBackend,
     convert_to_w4a8_moe_kernel_format,
+    convert_to_w4a8_vllm_mega_moe_kernel_format,
     make_w4a8_moe_kernel,
     make_w4a8_moe_quant_config,
     select_w4a8_moe_backend,
@@ -67,11 +69,23 @@ class CompressedTensorsW4A8Fp8MoEMethod(CompressedTensorsMoEMethod):
         layer.orig_dtype = params_dtype
         layer.weight_block_size = None
 
-        # requirement for CUTLASS reorder_tensor
+        # hidden_size must be a multiple of 256 for both backends
+        # (CUTLASS reorder_tensor as well as the vllm_mega_moe DOWN tile
+        # both require it). The intermediate_size_per_partition %256
+        # constraint is CUTLASS-specific; the vllm_mega_moe backend
+        # accepts smaller partition sizes (down to 128).
         assert hidden_size % 256 == 0, f"{hidden_size=} must be divisible by 256"
-        assert intermediate_size_per_partition % 256 == 0, (
-            f"{intermediate_size_per_partition=} must be divisible by 256"
-        )
+        if self.w4a8_backend == W4A8MoeBackend.CUTLASS:
+            assert intermediate_size_per_partition % 256 == 0, (
+                f"{intermediate_size_per_partition=} must be divisible by 256 "
+                "for the CUTLASS W4A8 backend; set VLLM_W4A8_MOE_BACKEND="
+                "vllm_mega_moe to relax this to 128"
+            )
+        else:
+            assert intermediate_size_per_partition % 128 == 0, (
+                f"{intermediate_size_per_partition=} must be divisible by 128 "
+                "for the vllm_mega_moe W4A8 backend"
+            )
         # storage type, pack 8xint4 into int32
         params_dtype = torch.int32
 
@@ -165,31 +179,58 @@ class CompressedTensorsW4A8Fp8MoEMethod(CompressedTensorsMoEMethod):
         layer.w2_input_scale = None
 
     def process_weights_after_loading(self, layer: RoutedExperts) -> None:
-        (
-            w13_weight_packed,
-            w2_weight_packed,
-            w13_weight_scale,
-            w2_weight_scale,
-            w13_weight_chan_scale,
-            w2_weight_chan_scale,
-            b_strides1,
-            b_strides2,
-        ) = convert_to_w4a8_moe_kernel_format(
-            w13_weight_packed=layer.w13_weight_packed,
-            w2_weight_packed=layer.w2_weight_packed,
-            w13_weight_scale=layer.w13_weight_scale,
-            w2_weight_scale=layer.w2_weight_scale,
-        )
+        if self.w4a8_backend == W4A8MoeBackend.CUTLASS:
+            (
+                w13_weight_packed,
+                w2_weight_packed,
+                w13_weight_scale,
+                w2_weight_scale,
+                w13_weight_chan_scale,
+                w2_weight_chan_scale,
+                b_strides1,
+                b_strides2,
+            ) = convert_to_w4a8_moe_kernel_format(
+                w13_weight_packed=layer.w13_weight_packed,
+                w2_weight_packed=layer.w2_weight_packed,
+                w13_weight_scale=layer.w13_weight_scale,
+                w2_weight_scale=layer.w2_weight_scale,
+            )
 
-        replace_parameter(layer, "w13_weight_packed", w13_weight_packed)
-        replace_parameter(layer, "w2_weight_packed", w2_weight_packed)
-        replace_parameter(layer, "w13_weight_scale", w13_weight_scale)
-        replace_parameter(layer, "w2_weight_scale", w2_weight_scale)
-        replace_parameter(layer, "w13_weight_chan_scale", w13_weight_chan_scale)
-        replace_parameter(layer, "w2_weight_chan_scale", w2_weight_chan_scale)
+            replace_parameter(layer, "w13_weight_packed", w13_weight_packed)
+            replace_parameter(layer, "w2_weight_packed", w2_weight_packed)
+            replace_parameter(layer, "w13_weight_scale", w13_weight_scale)
+            replace_parameter(layer, "w2_weight_scale", w2_weight_scale)
+            replace_parameter(layer, "w13_weight_chan_scale", w13_weight_chan_scale)
+            replace_parameter(layer, "w2_weight_chan_scale", w2_weight_chan_scale)
 
-        self.b_strides1 = b_strides1
-        self.b_strides2 = b_strides2
+            self.b_strides1 = b_strides1
+            self.b_strides2 = b_strides2
+        else:
+            # vllm_mega_moe uses a different weight layout:
+            # uint8-viewed INT4 packing with a gate/up rep=8 interleave on
+            # w13's N axis, and fp32 per-group scales with the same
+            # interleave. See convert_to_w4a8_vllm_mega_moe_kernel_format.
+            (
+                w13_weight_packed,
+                w2_weight_packed,
+                w13_weight_scale,
+                w2_weight_scale,
+            ) = convert_to_w4a8_vllm_mega_moe_kernel_format(
+                w13_weight_packed=layer.w13_weight_packed,
+                w2_weight_packed=layer.w2_weight_packed,
+                w13_weight_scale=layer.w13_weight_scale,
+                w2_weight_scale=layer.w2_weight_scale,
+            )
+
+            replace_parameter(layer, "w13_weight_packed", w13_weight_packed)
+            replace_parameter(layer, "w2_weight_packed", w2_weight_packed)
+            replace_parameter(layer, "w13_weight_scale", w13_weight_scale)
+            replace_parameter(layer, "w2_weight_scale", w2_weight_scale)
+            # The kernel folds channel scales into per-group weight scales
+            # already; unused channel-scale parameters are left as-is
+            # (they will be ignored by make_w4a8_moe_quant_config below).
+            self.b_strides1 = None
+            self.b_strides2 = None
 
         self.moe_quant_config = self.get_fused_moe_quant_config(layer)
         if self.moe_quant_config is not None:

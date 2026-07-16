@@ -2496,6 +2496,78 @@ if hasattr(torch.ops, "_moe_C") and hasattr(torch.ops._moe_C, "moe_wna16_marlin_
         )
 
 
+def vllm_mega_moe_fused_w4a8_up_down(
+    x: torch.Tensor,
+    x_scale: torch.Tensor,
+    w: torch.Tensor,
+    w_scale: torch.Tensor,
+    w2: torch.Tensor,
+    w2_scale: torch.Tensor,
+    sorted_token_ids: torch.Tensor,
+    expert_ids: torch.Tensor,
+    num_tokens_post_padded: torch.Tensor,
+    topk_weights: torch.Tensor,
+    out: torch.Tensor,
+    top_k: int,
+    block_m: int,
+    block_n: int,
+    warp_n: int,
+    stages: int,
+    scaling_factor: float,
+) -> None:
+    """Fused W4A8 (INT4 weight + FP8 activation) MoE up/down megakernel.
+
+    Runs UP GEMM, SwiGLU and DOWN GEMM inside a single Hopper WGMMA kernel
+    launch. Writes results in place to ``out``.
+    """
+    torch.ops._moe_C.vllm_mega_moe_fused_w4a8_up_down(
+        x,
+        x_scale,
+        w,
+        w_scale,
+        w2,
+        w2_scale,
+        sorted_token_ids,
+        expert_ids,
+        num_tokens_post_padded,
+        topk_weights,
+        out,
+        top_k,
+        block_m,
+        block_n,
+        warp_n,
+        stages,
+        scaling_factor,
+    )
+
+
+if hasattr(torch.ops, "_moe_C") and hasattr(
+    torch.ops._moe_C, "vllm_mega_moe_fused_w4a8_up_down"
+):
+
+    @register_fake("_moe_C::vllm_mega_moe_fused_w4a8_up_down")
+    def vllm_mega_moe_fused_w4a8_up_down_fake(
+        x: torch.Tensor,
+        x_scale: torch.Tensor,
+        w: torch.Tensor,
+        w_scale: torch.Tensor,
+        w2: torch.Tensor,
+        w2_scale: torch.Tensor,
+        sorted_token_ids: torch.Tensor,
+        expert_ids: torch.Tensor,
+        num_tokens_post_padded: torch.Tensor,
+        topk_weights: torch.Tensor,
+        out: torch.Tensor,
+        top_k: int,
+        block_m: int,
+        block_n: int,
+        warp_n: int,
+        stages: int,
+        scaling_factor: float,
+    ) -> None:
+        return None
+
+
 def reshape_and_cache(
     key: torch.Tensor,
     value: torch.Tensor,
